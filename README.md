@@ -47,3 +47,15 @@ REST API
 MongoDB
 
 ```
+
+## Proposed Database Design
+
+### users
+```json
+{
+  "_id": "ObjectId",
+  "name": "String",
+  "email": "String",
+  "role": "student | admin"
+}
+
