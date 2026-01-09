@@ -37,10 +37,13 @@ This repository currently contains **project documentation only**.
 ---
 
 ## 🏗️ Proposed Architecture
-```[ React Frontend ]
-|
+```
+[ React Frontend ]
+   |
 REST API
-|
+   |
 [ Node.js + Express ]
-|
-MongoDB```
+   |
+MongoDB
+
+```
