@@ -56,14 +56,18 @@ exports.registerForEvent = async (req, res, next) => {
       department: user.department
     });
 
-    // Update event registration count
-    event.registrations.push(registration._id);
-    event.registrationCount = event.registrations.length;
-    await event.save();
+    // Keep event registration references deduplicated and count in sync
+    await Event.findByIdAndUpdate(eventId, {
+      $addToSet: { registrations: registration._id }
+    });
+
+    const updatedEvent = await Event.findById(eventId);
+    updatedEvent.registrationCount = updatedEvent.registrations.length;
+    await updatedEvent.save();
 
     // Add to user's events
     await User.findByIdAndUpdate(userId, {
-      $push: { eventsRegistered: registration._id }
+      $addToSet: { eventsRegistered: registration._id }
     });
 
     await registration.populate(['event', 'student', 'club']);
@@ -110,7 +114,11 @@ exports.getEventRegistrations = async (req, res, next) => {
     }
 
     // Check authorization
-    if (!event.organizers.includes(req.user.id) && req.user.role !== 'admin') {
+    const isOrganizer = event.organizers.some(
+      (organizerId) => organizerId.toString() === req.user.id
+    );
+
+    if (!isOrganizer && req.user.role !== 'admin') {
       return res.status(403).json({ 
         success: false, 
         message: 'Not authorized to view registrations' 
@@ -148,7 +156,11 @@ exports.markAttendance = async (req, res, next) => {
     const event = await Event.findById(registration.event);
     
     // Check authorization
-    if (!event.organizers.includes(req.user.id) && req.user.role !== 'admin') {
+    const isOrganizer = event.organizers.some(
+      (organizerId) => organizerId.toString() === req.user.id
+    );
+
+    if (!isOrganizer && req.user.role !== 'admin') {
       return res.status(403).json({ 
         success: false, 
         message: 'Not authorized to mark attendance' 
@@ -194,9 +206,19 @@ exports.cancelRegistration = async (req, res, next) => {
     registration.status = 'cancelled';
     await registration.save();
 
-    // Update event count
+    // Remove registration references and keep counts in sync
     await Event.findByIdAndUpdate(registration.event, {
       $pull: { registrations: registrationId }
+    });
+
+    const updatedEvent = await Event.findById(registration.event);
+    if (updatedEvent) {
+      updatedEvent.registrationCount = updatedEvent.registrations.length;
+      await updatedEvent.save();
+    }
+
+    await User.findByIdAndUpdate(registration.student, {
+      $pull: { eventsRegistered: registration._id }
     });
 
     res.status(200).json({

@@ -1,25 +1,61 @@
 const Club = require('../models/Club');
 const User = require('../models/User');
+const Event = require('../models/Event');
 
 // Create club (admin only)
 exports.createClub = async (req, res, next) => {
   try {
     const { name, description, category, email, president } = req.body;
 
-    if (!name || !description || !category) {
+    const normalizedName = typeof name === 'string' ? name.trim() : '';
+    const normalizedDescription = typeof description === 'string' ? description.trim() : '';
+    const normalizedCategory = typeof category === 'string' ? category.trim().toLowerCase() : '';
+    const normalizedEmail = typeof email === 'string' && email.trim() !== '' ? email.trim().toLowerCase() : undefined;
+
+    if (!normalizedName || !normalizedDescription || !normalizedCategory) {
       return res.status(400).json({ 
         success: false, 
         message: 'Please provide all required fields' 
       });
     }
 
+    const validCategories = ['academic', 'cultural', 'sports', 'technical', 'social', 'professional'];
+    if (!validCategories.includes(normalizedCategory)) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid category. Allowed values: ${validCategories.join(', ')}`
+      });
+    }
+
+    const existingClub = await Club.findOne({ name: { $regex: `^${normalizedName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' } });
+    if (existingClub) {
+      return res.status(409).json({
+        success: false,
+        message: 'Club with this name already exists'
+      });
+    }
+
+    const presidentId = president || req.user.id;
+    const presidentUser = await User.findById(presidentId);
+
+    if (!presidentUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid president user'
+      });
+    }
+
     const club = await Club.create({
-      name,
-      description,
-      category,
-      email,
-      president: president || req.user.id,
-      members: [president || req.user.id]
+      name: normalizedName,
+      description: normalizedDescription,
+      category: normalizedCategory,
+      email: normalizedEmail,
+      president: presidentId,
+      members: [presidentId]
+    });
+
+    await User.findByIdAndUpdate(presidentId, {
+      $addToSet: { clubsJoined: club._id }
     });
 
     await club.populate('president members');
@@ -127,7 +163,11 @@ exports.joinClub = async (req, res, next) => {
     }
 
     // Check if already member
-    if (club.members.includes(req.user.id)) {
+    const alreadyMember = club.members.some(
+      (memberId) => memberId.toString() === req.user.id
+    );
+
+    if (alreadyMember) {
       return res.status(400).json({ 
         success: false, 
         message: 'Already a member of this club' 
@@ -140,7 +180,7 @@ exports.joinClub = async (req, res, next) => {
 
     // Add to user's clubs
     await User.findByIdAndUpdate(req.user.id, {
-      $push: { clubsJoined: club._id }
+      $addToSet: { clubsJoined: club._id }
     });
 
     res.status(200).json({
@@ -165,7 +205,18 @@ exports.leaveClub = async (req, res, next) => {
       });
     }
 
-    if (!club.members.includes(req.user.id)) {
+    if (club.president.toString() === req.user.id) {
+      return res.status(400).json({
+        success: false,
+        message: 'Club president cannot leave the club'
+      });
+    }
+
+    const isMember = club.members.some(
+      (memberId) => memberId.toString() === req.user.id
+    );
+
+    if (!isMember) {
       return res.status(400).json({ 
         success: false, 
         message: 'Not a member of this club' 
@@ -210,6 +261,13 @@ exports.deleteClub = async (req, res, next) => {
         message: 'Not authorized to delete this club' 
       });
     }
+
+    const userIds = club.members.map((memberId) => memberId.toString());
+
+    await Promise.all([
+      User.updateMany({ _id: { $in: userIds } }, { $pull: { clubsJoined: club._id } }),
+      Event.updateMany({ club: club._id }, { $set: { club: null } })
+    ]);
 
     await Club.findByIdAndDelete(req.params.id);
 

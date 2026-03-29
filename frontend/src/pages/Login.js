@@ -19,6 +19,11 @@ const Login = () => {
       await login(formData.email, formData.password);
       navigate('/');
     } catch (err) {
+      if (!err.response) {
+        setError('Cannot connect to server. Start backend on http://localhost:5000 and try again.');
+        return;
+      }
+
       setError(err.response?.data?.message || 'Login failed');
     }
   };

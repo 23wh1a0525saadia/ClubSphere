@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "seed:demo": "node seed-demo-users.js",
+    "repair:data": "node repair-data-integrity.js"
   },
   "keywords": ["mongodb", "express", "nodejs", "events"],
   "author": "",
@@ -17,7 +19,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "jsonwebtoken": "^9.1.2",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^8.0.3",
     "validator": "^13.11.0"
   },
