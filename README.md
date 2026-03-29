@@ -1,153 +1,422 @@
-# ClubSphere
-# ClubSphere — Campus Club Event Management System
+# ClubSphere - Campus Club Event Management System
 
-**MERN Stack Student Project (Documentation Only)**
+Complete MERN Stack Application for managing campus clubs and events.
 
----
+## 📋 Project Overview
 
-## 📌 Project Overview
+**ClubSphere** is a comprehensive platform designed to streamline the creation, management, and participation of college club events. It provides:
 
-ClubSphere is a Campus Club Event Management System designed to streamline
-the creation, management, and participation of college club events.
+- **Club Management**: Create and manage campus clubs with role-based access
+- **Event Management**: Organize and track club events  
+- **Student Registration**: Easy event registration and attendance tracking
+- **Announcements**: Share club news and updates
+- **User Authentication**: Secure JWT-based authentication
+- **Role-Based Access Control**: Student, Admin, and Club President roles
 
-This repository currently contains **project documentation only**.
-
----
-
-## 🎯 Purpose
-- To design a centralized platform for campus club event management
-- To understand system architecture and database design
-- To prepare a full-stack project blueprint using the MERN stack
-
----
-
-## 👥 Target Audience
-- College Faculty / Mentors
-- Undergraduate Students
-- Developers learning system design
-
----
-
-## ✨ Key Features (Proposed)
-- Event creation and management
-- Student event registration
-- Student dashboard
-- Admin dashboard for event control
-
----
-
-## 🏗️ Proposed Architecture
-```
-[ React Frontend ]
-   |
-REST API
-   |
-[ Node.js + Express ]
-   |
-MongoDB
+## 🏗️ Architecture
 
 ```
+Frontend (React)          Backend (Node.js + Express)       Database (MongoDB)
+├─ Auth Pages            ├─ API Routes                      ├─ Users
+├─ Club Pages            ├─ Controllers                     ├─ Clubs
+├─ Event Pages           ├─ Models                          ├─ Events
+└─ Services              ├─ Middleware                      ├─ Registrations
+                         └─ Config                          └─ Announcements
+```
 
-## Proposed Database Design
+## 📊 Database Schema
 
-### users
-```json
+### Collections
+
+#### 1. **Users Collection**
+```javascript
 {
-  "_id": "ObjectId",
-  "name": "String",
-  "email": "String",
-  "role": "student | admin"
-}
-```
-### events
-```json
-{
-  "_id": "ObjectId",
-  "title": "String",
-  "description": "String",
-  "date": "Date"
+  _id: ObjectId,
+  name: String,
+  email: String (unique),
+  password: String (hashed),
+  role: "student" | "admin" | "president",
+  registrationNumber: String,
+  department: "CSE" | "ECE" | "ME" | "CE" | "EEE" | "BT" | "OTHER",
+  semester: Number (1-8),
+  clubsJoined: [ObjectId],
+  eventsRegistered: [ObjectId],
+  profileImage: String,
+  isActive: Boolean,
+  createdAt: Date,
+  updatedAt: Date
 }
 ```
 
-### registrations
-```json
+#### 2. **Clubs Collection**
+```javascript
 {
-  "_id": "ObjectId",
-  "eventId": "ObjectId",
-  "studentId": "ObjectId",
-  "registeredAt": "Date"
+  _id: ObjectId,
+  name: String (unique),
+  description: String,
+  president: ObjectId (ref: User),
+  vicePrincipal: ObjectId,
+  secretary: ObjectId,
+  members: [ObjectId],
+  category: "academic" | "cultural" | "sports" | "technical" | "social" | "professional",
+  email: String,
+  logo: String,
+  coverImage: String,
+  events: [ObjectId],
+  announcements: [ObjectId],
+  memberCount: Number,
+  isActive: Boolean,
+  createdAt: Date,
+  updatedAt: Date
 }
 ```
----
 
-## ⚙️ Backend Design (Proposed)
+#### 3. **Events Collection**
+```javascript
+{
+  _id: ObjectId,
+  title: String,
+  description: String,
+  club: ObjectId (ref: Club),
+  banner: String,
+  eventType: "workshop" | "seminar" | "competition" | "fest" | "social" | "technical" | "other",
+  startDate: Date,
+  endDate: Date,
+  startTime: String,
+  endTime: String,
+  location: String,
+  capacity: Number,
+  registrations: [ObjectId],
+  registrationCount: Number,
+  isRegistrationOpen: Boolean,
+  organizers: [ObjectId],
+  status: "upcoming" | "ongoing" | "completed" | "cancelled",
+  isFeatured: Boolean,
+  createdAt: Date,
+  updatedAt: Date
+}
+```
 
-### Technology Stack
-- Node.js
-- Express.js
-- MongoDB
-- JWT-based Authentication
+#### 4. **Registrations Collection**
+```javascript
+{
+  _id: ObjectId,
+  event: ObjectId (ref: Event),
+  student: ObjectId (ref: User),
+  club: ObjectId (ref: Club),
+  registrationNumber: String,
+  department: String,
+  registeredAt: Date,
+  status: "registered" | "attended" | "cancelled" | "no-show",
+  attendance: Boolean,
+  attendedAt: Date,
+  feedback: String,
+  rating: Number (0-5)
+}
+```
 
-### Responsibilities
-- Handle REST API requests
-- Manage user roles (Student / Admin)
-- Perform CRUD operations on events
-- Manage event registrations
-- Ensure secure data access
+#### 5. **Announcements Collection**
+```javascript
+{
+  _id: ObjectId,
+  title: String,
+  content: String,
+  club: ObjectId (ref: Club),
+  createdBy: ObjectId (ref: User),
+  category: "general" | "event" | "recruitment" | "achievement" | "important",
+  image: String,
+  priority: "low" | "medium" | "high" | "urgent",
+  isPinned: Boolean,
+  views: Number,
+  likes: [ObjectId],
+  comments: [{
+    user: ObjectId,
+    text: String,
+    createdAt: Date
+  }],
+  createdAt: Date,
+  updatedAt: Date
+}
+```
 
----
+## 🚀 Getting Started
 
-## 💻 Frontend Design (Proposed)
+### Prerequisites
+- Node.js (v14 or higher)
+- MongoDB (local or Atlas)
+- Git
 
-### Technology Stack
+### Backend Setup
+
+1. **Navigate to backend directory**
+   ```bash
+   cd backend
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Create `.env` file** (use `.env.example` as reference)
+   ```bash
+   cp .env.example .env
+   ```
+
+4. **Update `.env` with your configuration**
+   ```env
+   PORT=5000
+   NODE_ENV=development
+   MONGODB_URI=mongodb://localhost:27017/clubsphere
+   JWT_SECRET=your_secret_key_here
+   FRONTEND_URL=http://localhost:3000
+   ```
+
+5. **Start MongoDB** (if running locally)
+   ```bash
+   mongod
+   ```
+
+6. **Run the server**
+   ```bash
+   npm run dev
+   ```
+   Server will start at `http://localhost:5000`
+
+### Frontend Setup
+
+1. **Navigate to frontend directory** (in a new terminal)
+   ```bash
+   cd frontend
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Create `.env` file**
+   ```bash
+   cp .env.example .env
+   ```
+
+4. **Update `.env` if needed**
+   ```env
+   REACT_APP_API_URL=http://localhost:5000/api
+   ```
+
+5. **Start the React app**
+   ```bash
+   npm start
+   ```
+   App will open at `http://localhost:3000`
+
+## 📚 API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login user
+- `GET /api/auth/me` - Get current user (Protected)
+- `PUT /api/auth/profile` - Update profile (Protected)
+- `GET /api/auth/:id` - Get user by ID (Protected)
+- `GET /api/auth` - Get all users (Admin only)
+
+### Clubs
+- `GET /api/clubs` - Get all clubs
+- `GET /api/clubs/:id` - Get club details
+- `POST /api/clubs` - Create club (Protected)
+- `PUT /api/clubs/:id` - Update club (Protected)
+- `DELETE /api/clubs/:id` - Delete club (Protected)
+- `POST /api/clubs/:id/join` - Join club (Protected)
+- `POST /api/clubs/:id/leave` - Leave club (Protected)
+
+### Events
+- `GET /api/events` - Get all events
+- `GET /api/events/:id` - Get event details
+- `GET /api/events/club/:clubId` - Get events by club
+- `POST /api/events` - Create event (Protected)
+- `PUT /api/events/:id` - Update event (Protected)
+- `DELETE /api/events/:id` - Delete event (Protected)
+
+### Registrations
+- `POST /api/registrations/:eventId` - Register for event (Protected)
+- `GET /api/registrations/me/registrations` - Get user's registrations (Protected)
+- `GET /api/registrations/event/:eventId` - Get event registrations (Protected)
+- `PUT /api/registrations/:registrationId/attendance` - Mark attendance (Protected)
+- `DELETE /api/registrations/:registrationId` - Cancel registration (Protected)
+- `PUT /api/registrations/:registrationId/feedback` - Submit feedback (Protected)
+
+### Announcements
+- `GET /api/announcements` - Get all announcements
+- `GET /api/announcements/:id` - Get announcement details
+- `POST /api/announcements` - Create announcement (Protected)
+- `PUT /api/announcements/:id` - Update announcement (Protected)
+- `DELETE /api/announcements/:id` - Delete announcement (Protected)
+- `POST /api/announcements/:id/like` - Like announcement (Protected)
+- `POST /api/announcements/:id/comment` - Add comment (Protected)
+
+## 🔐 User Roles & Permissions
+
+### Student
+- Browse clubs and events
+- Join/leave clubs
+- Register for events
+- View profile
+- Submit feedback
+
+### Club President
+- Create and manage club
+- Create events
+- View announcements
+- Mark attendance
+- Manage members
+
+### Admin
+- Access all management features
+- Create clubs
+- Manage users
+- View all data
+
+## 🎨 Frontend Pages
+
+- **Home** - Landing page with featured clubs and events
+- **Login/Register** - Authentication pages
+- **Clubs** - Browse and filter clubs by category
+- **Events** - Browse and filter events by status
+- **My Events** - View registered events (Protected)
+- **Profile** - User profile management (Protected)
+- **Dashboard** - Admin/President dashboard (Protected)
+
+## 🛠️ Technology Stack
+
+### Backend
+- Node.js + Express.js
+- MongoDB + Mongoose
+- JWT Authentication
+- bcryptjs (Password hashing)
+- CORS
+- dotenv
+
+### Frontend
 - React.js
-- React Router
+- React Router v6
 - Axios
+- CSS3
 
-### Key Pages
-- Login / Signup Page
-- Student Dashboard (Event List)
-- Event Details & Registration Page
-- Admin Dashboard (Event Management)
+## 📁 Project Structure
 
-### Responsibilities
-- Display events to students
-- Allow students to register/unregister
-- Provide admin interface for managing events
-- Communicate with backend via REST APIs
+```
+ClubSphere/
+├── backend/
+│   ├── config/
+│   │   └── database.js
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── clubController.js
+│   │   ├── eventController.js
+│   │   ├── registrationController.js
+│   │   └── announcementController.js
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   └── errorHandler.js
+│   ├── models/
+│   │   ├── User.js
+│   │   ├── Club.js
+│   │   ├── Event.js
+│   │   ├── Registration.js
+│   │   └── Announcement.js
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── clubRoutes.js
+│   │   ├── eventRoutes.js
+│   │   ├── registrationRoutes.js
+│   │   └── announcementRoutes.js
+│   ├── .env.example
+│   ├── .gitignore
+│   ├── index.js
+│   └── package.json
+│
+├── frontend/
+│   ├── public/
+│   │   └── index.html
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Navbar.js
+│   │   │   ├── Navbar.css
+│   │   │   └── PrivateRoute.js
+│   │   ├── context/
+│   │   │   └── AuthContext.js
+│   │   ├── pages/
+│   │   │   ├── Home.js
+│   │   │   ├── Home.css
+│   │   │   ├── Login.js
+│   │   │   ├── Register.js
+│   │   │   ├── Auth.css
+│   │   │   ├── Clubs.js
+│   │   │   ├── Clubs.css
+│   │   │   ├── Events.js
+│   │   │   └── Events.css
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   ├── styles/
+│   │   │   └── global.css
+│   │   ├── App.js
+│   │   └── index.js
+│   ├── .env.example
+│   ├── .gitignore
+│   ├── package.json
+│   └── public/
+│
+├── .gitignore
+└── README.md
+```
+
+## 🚀 Deployment
+
+### Backend Deployment (Heroku/Render)
+1. Create account on Heroku/Render
+2. Set environment variables
+3. Connect Git repository
+4. Deploy
+
+### Frontend Deployment (Vercel/Netlify)
+1. Build React app: `npm run build`
+2. Deploy the `build` folder
+3. Set API URL in environment variables
+
+## 📄 Git Branching
+
+Currently on `db_schema` branch for database schema implementation.
+
+To switch to main:
+```bash
+git checkout main
+```
+
+To merge db_schema to main:
+```bash
+git checkout main
+git merge db_schema
+```
+
+## 🤝 Contributing
+
+1. Create a feature branch
+2. Commit changes
+3. Push to GitHub
+4. Create a Pull Request
+
+## 📝 License
+
+This project is for educational purposes.
+
+## 👨‍💻 Author
+
+Developed as a complete MERN Stack Campus Management System
 
 ---
 
-## 🔐 Security Considerations (Proposed)
-
-- Role-based access control (Student / Admin)
-- Protected API routes
-- Input validation and basic authorization
-
----
-
-## 🚀 Future Enhancements
-
-- Email notifications for event updates
-- QR-based attendance tracking
-- Event analytics dashboard
-- Multi-club and multi-college support
-
----
-
-## 📌 Conclusion
-
-ClubSphere is a proposed Campus Club Event Management System designed to provide
-a structured and centralized solution for managing college club events.
-
-This project focuses on system design, architecture, and database planning,
-serving as a strong foundation for future full-stack implementation using the MERN stack.
-
----
-
-## 📄 Project Details
-
-- **Project Name:** ClubSphere  
+**For questions or support, contact your project mentor.**  
 - **Project Type:** Documentation & Design Phase  
 - **Document Owner:** Saadia Taqveem  
 
