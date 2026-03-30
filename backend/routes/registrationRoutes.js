@@ -10,6 +10,9 @@ router.post('/:eventId', authMiddleware, registrationController.registerForEvent
 // User registrations
 router.get('/me/registrations', authMiddleware, registrationController.getUserRegistrations);
 
+// Current user's registration for a specific event
+router.get('/event/:eventId/me', authMiddleware, registrationController.getMyEventRegistration);
+
 // Event registrations (organizer/admin)
 router.get('/event/:eventId', authMiddleware, registrationController.getEventRegistrations);
 

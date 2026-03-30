@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { registrationService } from '../services/api';
+import { AuthContext } from '../context/AuthContext';
 import './MyRegistrations.css';
 
 const MyRegistrations = () => {
   const navigate = useNavigate();
+  const { fetchCurrentUser } = useContext(AuthContext);
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
@@ -25,6 +27,7 @@ const MyRegistrations = () => {
   const handleCancel = async (registrationId) => {
     try {
       await registrationService.cancelRegistration(registrationId);
+      await fetchCurrentUser();
       await fetchRegistrations();
     } catch (error) {
       setMessage(error.response?.data?.message || 'Failed to cancel registration');

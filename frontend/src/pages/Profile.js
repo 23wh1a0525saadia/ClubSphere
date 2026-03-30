@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { authService } from '../services/api';
 import './Profile.css';
 
 const Profile = () => {
-  const { user, isAuthenticated, loading } = useContext(AuthContext);
+  const { user, isAuthenticated, loading, fetchCurrentUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
@@ -48,6 +48,7 @@ const Profile = () => {
         department: formData.department,
         semester: formData.semester
       });
+      await fetchCurrentUser();
       setMessage('✅ Profile updated successfully!');
       setIsEditing(false);
       setTimeout(() => setMessage(''), 3000);
@@ -59,7 +60,47 @@ const Profile = () => {
     }
   };
 
-  if (loading) return <div className="profile-container"><p>Loading...</p></div>;
+  const clubsJoined = useMemo(() => {
+    if (!Array.isArray(user?.clubsJoined)) return [];
+    return user.clubsJoined
+      .map((club) => ({
+        id: club?._id || club,
+        name: club?.name || (typeof club === 'string' ? club : 'Unnamed Club')
+      }))
+      .filter((club) => !!club.id);
+  }, [user?.clubsJoined]);
+
+  const eventsRegistered = useMemo(() => {
+    if (!Array.isArray(user?.eventsRegistered)) return [];
+    return user.eventsRegistered
+      .map((registration) => {
+        const nestedEvent = registration?.event;
+        if (nestedEvent && nestedEvent._id) {
+          return {
+            id: registration?._id || nestedEvent._id,
+            title: nestedEvent.title || 'Unnamed Event',
+            status: registration?.status || 'registered'
+          };
+        }
+
+        if (registration?.title) {
+          return {
+            id: registration?._id,
+            title: registration.title,
+            status: registration?.status || 'registered'
+          };
+        }
+
+        return {
+          id: registration?._id,
+          title: 'Event details unavailable',
+          status: registration?.status || 'registered'
+        };
+      })
+      .filter((entry) => !!entry.id);
+  }, [user?.eventsRegistered]);
+
+  if (loading && !user) return <div className="profile-container"><p>Loading...</p></div>;
 
   if (!isAuthenticated) return null;
 
@@ -123,8 +164,8 @@ const Profile = () => {
                   <div className="clubs-list">
                     {user?.clubsJoined && user.clubsJoined.length > 0 ? (
                       <ul>
-                        {user.clubsJoined.map(club => (
-                          <li key={club._id}>{club.name}</li>
+                        {clubsJoined.map(club => (
+                          <li key={club.id}>{club.name}</li>
                         ))}
                       </ul>
                     ) : (
@@ -140,8 +181,8 @@ const Profile = () => {
                   <div className="events-list">
                     {user?.eventsRegistered && user.eventsRegistered.length > 0 ? (
                       <ul>
-                        {user.eventsRegistered.map(event => (
-                          <li key={event._id}>{event.title}</li>
+                        {eventsRegistered.map(event => (
+                          <li key={event.id}>{event.title}</li>
                         ))}
                       </ul>
                     ) : (

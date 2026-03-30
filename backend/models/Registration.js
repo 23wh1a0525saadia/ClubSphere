@@ -18,11 +18,15 @@ const registrationSchema = new mongoose.Schema({
   },
   registrationNumber: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
+    uppercase: true
   },
   department: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
+    uppercase: true
   },
   registeredAt: {
     type: Date,
@@ -89,5 +93,17 @@ const registrationSchema = new mongoose.Schema({
 
 // Unique registration per student per event
 registrationSchema.index({ event: 1, student: 1 }, { unique: true });
+
+registrationSchema.pre('save', function(next) {
+  if (this.status === 'cancelled') {
+    this.attendance = false;
+    this.attendedAt = null;
+  } else if (this.attendance) {
+    this.status = 'attended';
+    this.attendedAt = this.attendedAt || new Date();
+  }
+
+  next();
+});
 
 module.exports = mongoose.model('Registration', registrationSchema);

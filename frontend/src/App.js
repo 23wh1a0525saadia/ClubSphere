@@ -34,10 +34,26 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/clubs" element={<Clubs />} />
-          <Route path="/clubs/:id" element={<ClubDetail />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/events/:id" element={<EventDetail />} />
+          <Route path="/clubs" element={
+            <PrivateRoute>
+              <Clubs />
+            </PrivateRoute>
+          } />
+          <Route path="/clubs/:id" element={
+            <PrivateRoute>
+              <ClubDetail />
+            </PrivateRoute>
+          } />
+          <Route path="/events" element={
+            <PrivateRoute>
+              <Events />
+            </PrivateRoute>
+          } />
+          <Route path="/events/:id" element={
+            <PrivateRoute>
+              <EventDetail />
+            </PrivateRoute>
+          } />
           
           {/* Protected routes */}
           <Route path="/my-registrations" element={

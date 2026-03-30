@@ -7,7 +7,7 @@ import './EventDetail.css';
 const EventDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useContext(AuthContext);
+  const { user, isAuthenticated, fetchCurrentUser } = useContext(AuthContext);
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [registering, setRegistering] = useState(false);
@@ -31,6 +31,25 @@ const EventDetail = () => {
     fetchEventDetails();
   }, [fetchEventDetails]);
 
+  useEffect(() => {
+    const fetchRegistrationStatus = async () => {
+      if (!isAuthenticated || !user || user.role === 'admin' || user.role === 'president') {
+        setIsRegistered(false);
+        return;
+      }
+
+      try {
+        const response = await registrationService.getMyEventRegistration(id);
+        const registration = response.data?.registration;
+        setIsRegistered(Boolean(registration && registration.status !== 'cancelled'));
+      } catch (error) {
+        setIsRegistered(false);
+      }
+    };
+
+    fetchRegistrationStatus();
+  }, [id, isAuthenticated, user]);
+
   const handleRegister = async () => {
     if (!isAuthenticated) {
       navigate('/login');
@@ -46,8 +65,10 @@ const EventDetail = () => {
       setRegistering(true);
       setMessage('');
       await registrationService.registerForEvent(id);
+      await fetchCurrentUser();
       setMessage('✅ Successfully registered for this event!');
       setIsRegistered(true);
+      fetchEventDetails();
     } catch (error) {
       setMessage('❌ Registration failed: ' + (error.response?.data?.message || error.message));
     } finally {

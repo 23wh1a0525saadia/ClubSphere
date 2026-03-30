@@ -56,6 +56,7 @@ export const eventService = {
 export const registrationService = {
   registerForEvent: (eventId) => api.post(`/registrations/${eventId}`),
   getUserRegistrations: () => api.get('/registrations/me/registrations'),
+  getMyEventRegistration: (eventId) => api.get(`/registrations/event/${eventId}/me`),
   getEventRegistrations: (eventId) => api.get(`/registrations/event/${eventId}`),
   markAttendance: (registrationId, attendance) => api.put(`/registrations/${registrationId}/attendance`, { attendance }),
   cancelRegistration: (registrationId) => api.delete(`/registrations/${registrationId}`),

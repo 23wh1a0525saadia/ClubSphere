@@ -41,6 +41,11 @@ const ClubDetail = () => {
     return presidentId?.toString() === user._id?.toString();
   }, [isAuthenticated, user, club]);
 
+  const canManageEvents = useMemo(() => {
+    if (!isAuthenticated || !user) return false;
+    return user.role === 'admin' || user.role === 'president';
+  }, [isAuthenticated, user]);
+
   const fetchClubData = useCallback(async () => {
     try {
       setLoading(true);
@@ -138,6 +143,12 @@ const ClubDetail = () => {
               <span>President: {presidentName}</span>
             </div>
             <div className="club-hero-actions">
+              {canManageEvents && (
+                <Link className="club-detail-btn primary" to={`/admin/create-event?clubId=${club._id}`}>
+                  Create Event For Club
+                </Link>
+              )}
+
               {isPresident ? (
                 <button className="club-detail-btn joined" disabled>
                   President

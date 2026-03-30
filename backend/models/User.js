@@ -6,12 +6,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide a name'],
     trim: true,
+    minlength: [2, 'Name must be at least 2 characters'],
     maxlength: [50, 'Name cannot exceed 50 characters']
   },
   email: {
     type: String,
     required: [true, 'Please provide an email'],
     unique: true,
+    trim: true,
     lowercase: true,
     match: [
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
@@ -31,6 +33,8 @@ const userSchema = new mongoose.Schema({
   },
   registrationNumber: {
     type: String,
+    trim: true,
+    uppercase: true,
     unique: true,
     sparse: true
   },
@@ -41,6 +45,10 @@ const userSchema = new mongoose.Schema({
   },
   semester: {
     type: Number,
+    validate: {
+      validator: Number.isInteger,
+      message: 'Semester must be an integer value'
+    },
     min: 1,
     max: 8
   },
@@ -72,6 +80,8 @@ const userSchema = new mongoose.Schema({
 
 // Hash password before saving
 userSchema.pre('save', async function(next) {
+  this.updatedAt = Date.now();
+
   if (!this.isModified('password')) {
     return next();
   }

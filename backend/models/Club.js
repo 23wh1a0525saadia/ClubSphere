@@ -82,9 +82,25 @@ const clubSchema = new mongoose.Schema({
 // Update member count and last modified date
 clubSchema.pre('save', async function(next) {
   this.updatedAt = Date.now();
+
+  if (Array.isArray(this.members)) {
+    // Keep members list unique to avoid duplicate memberships.
+    const uniqueMemberIds = [...new Set(this.members.map((memberId) => memberId.toString()))];
+    this.members = uniqueMemberIds;
+  }
+
+  if (this.president) {
+    const presidentId = this.president.toString();
+    const members = Array.isArray(this.members) ? this.members.map((memberId) => memberId.toString()) : [];
+    if (!members.includes(presidentId)) {
+      this.members = [...members, presidentId];
+    }
+  }
+
   if (this.isModified('members')) {
     this.memberCount = this.members.length;
   }
+
   next();
 });
 

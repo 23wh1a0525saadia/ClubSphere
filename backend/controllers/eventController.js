@@ -8,11 +8,31 @@ exports.createEvent = async (req, res, next) => {
   try {
     const { title, description, club, eventType, startDate, endDate, startTime, endTime, location, capacity } = req.body;
 
+    const normalizedTitle = typeof title === 'string' ? title.trim() : '';
+    const normalizedLocation = typeof location === 'string' ? location.trim() : '';
+    const normalizedEventType = typeof eventType === 'string' ? eventType.trim().toLowerCase() : '';
+    const normalizedDescription = typeof description === 'string' ? description.trim() : '';
+    const normalizedCapacity = Number(capacity);
+
     // Only require essential fields
-    if (!title || !eventType || !location || !capacity || !startDate || !endDate) {
+    if (!normalizedTitle || !normalizedEventType || !normalizedLocation || !capacity || !startDate || !endDate) {
       return res.status(400).json({ 
         success: false, 
         message: 'Please provide: Title, Event Type, Location, Capacity, Start Date, End Date' 
+      });
+    }
+
+    if (Number.isNaN(normalizedCapacity) || normalizedCapacity <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Capacity must be a positive number'
+      });
+    }
+
+    if (new Date(endDate) < new Date(startDate)) {
+      return res.status(400).json({
+        success: false,
+        message: 'End date must be after start date'
       });
     }
 
@@ -27,16 +47,16 @@ exports.createEvent = async (req, res, next) => {
     }
 
     const event = await Event.create({
-      title,
-      description: description || '',
+      title: normalizedTitle,
+      description: normalizedDescription,
       club: club || null,
-      eventType,
+      eventType: normalizedEventType,
       startDate,
       endDate,
       startTime: startTime || '10:00',
       endTime: endTime || '12:00',
-      location,
-      capacity,
+      location: normalizedLocation,
+      capacity: normalizedCapacity,
       organizers: [req.user.id]
     });
 
@@ -146,9 +166,43 @@ exports.updateEvent = async (req, res, next) => {
       }
     }
 
+    const updates = { updatedAt: Date.now() };
+
+    if (title !== undefined) updates.title = typeof title === 'string' ? title.trim() : title;
+    if (description !== undefined) updates.description = typeof description === 'string' ? description.trim() : description;
+    if (eventType !== undefined) updates.eventType = typeof eventType === 'string' ? eventType.trim().toLowerCase() : eventType;
+    if (startDate !== undefined) updates.startDate = startDate;
+    if (endDate !== undefined) updates.endDate = endDate;
+    if (startTime !== undefined) updates.startTime = startTime;
+    if (endTime !== undefined) updates.endTime = endTime;
+    if (location !== undefined) updates.location = typeof location === 'string' ? location.trim() : location;
+    if (capacity !== undefined) {
+      const normalizedCapacity = Number(capacity);
+      if (Number.isNaN(normalizedCapacity) || normalizedCapacity <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Capacity must be a positive number'
+        });
+      }
+      updates.capacity = normalizedCapacity;
+    }
+    if (isRegistrationOpen !== undefined) updates.isRegistrationOpen = isRegistrationOpen;
+    if (status !== undefined) updates.status = status;
+    if (banner !== undefined) updates.banner = banner;
+    updates.club = targetClubId;
+
+    const nextStartDate = updates.startDate || event.startDate;
+    const nextEndDate = updates.endDate || event.endDate;
+    if (new Date(nextEndDate) < new Date(nextStartDate)) {
+      return res.status(400).json({
+        success: false,
+        message: 'End date must be after start date'
+      });
+    }
+
     event = await Event.findByIdAndUpdate(
       req.params.id,
-      { title, description, eventType, startDate, endDate, startTime, endTime, location, capacity, isRegistrationOpen, status, banner, club: targetClubId, updatedAt: Date.now() },
+      updates,
       { new: true, runValidators: true }
     ).populate(['club', 'organizers']);
 

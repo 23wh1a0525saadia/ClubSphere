@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const timePattern = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
 const eventSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -39,12 +41,14 @@ const eventSchema = new mongoose.Schema({
   startTime: {
     type: String,
     required: false,
-    default: '10:00'
+    default: '10:00',
+    match: [timePattern, 'Start time must be in HH:mm format']
   },
   endTime: {
     type: String,
     required: false,
-    default: '12:00'
+    default: '12:00',
+    match: [timePattern, 'End time must be in HH:mm format']
   },
   location: {
     type: String,
@@ -54,6 +58,10 @@ const eventSchema = new mongoose.Schema({
   capacity: {
     type: Number,
     required: true,
+    validate: {
+      validator: Number.isInteger,
+      message: 'Capacity must be an integer value'
+    },
     min: [1, 'Capacity must be at least 1']
   },
   registrations: [{
@@ -111,6 +119,19 @@ const eventSchema = new mongoose.Schema({
 
 // Update status based on dates
 eventSchema.pre('save', function(next) {
+  if (this.endDate < this.startDate) {
+    return next(new Error('End date must be after start date'));
+  }
+
+  if (Array.isArray(this.registrations)) {
+    this.registrations = [...new Set(this.registrations.map((registrationId) => registrationId.toString()))];
+    this.registrationCount = this.registrations.length;
+  }
+
+  if (this.registrationCount > this.capacity) {
+    return next(new Error('Registration count cannot exceed capacity'));
+  }
+
   const now = new Date();
   if (now > this.endDate) {
     this.status = 'completed';

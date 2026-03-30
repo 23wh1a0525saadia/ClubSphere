@@ -1,16 +1,16 @@
 .my-registrations-page {
   min-height: calc(100vh - 80px);
-  padding: 32px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 24px 16px 34px;
+  background: #f3f6fc;
 }
 
 .my-registrations-container {
   max-width: 1100px;
   margin: 0 auto;
-  background: #ffffff;
+  background: #fff;
+  border: 1px solid #e5ebf7;
   border-radius: 12px;
-  padding: 28px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  padding: 20px;
 }
 
 .page-back-btn {
@@ -21,42 +21,42 @@
   padding: 10px 14px;
   font-weight: 700;
   cursor: pointer;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .history-caption {
-  margin: 0 0 16px 0;
-  color: #646b83;
-  font-size: 0.95rem;
-  font-weight: 600;
+  margin: 0 0 12px;
+  color: #647090;
+  font-size: 0.93rem;
+  font-weight: 700;
 }
 
 .my-registrations-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .my-registrations-header h1 {
   margin: 0;
-  color: #1f233a;
+  color: #232b49;
 }
 
 .refresh-btn {
   border: none;
   background: #00d4ff;
   color: #1a1a2e;
-  padding: 10px 14px;
+  padding: 9px 13px;
   border-radius: 8px;
   font-weight: 700;
   cursor: pointer;
 }
 
 .state-text {
-  margin: 12px 0;
-  color: #2e2e2e;
+  margin: 10px 0;
+  color: #4f5978;
 }
 
 .state-text.error {
@@ -65,15 +65,20 @@
 
 .empty-state {
   text-align: center;
-  padding: 28px 12px;
+  padding: 26px 10px;
+  border: 1px dashed #d9e2f5;
+  border-radius: 10px;
+  background: #fafcff;
 }
 
 .empty-state h2 {
-  margin: 0 0 8px;
+  margin: 0 0 6px;
+  color: #2b3555;
 }
 
 .empty-state p {
-  margin: 0 0 16px;
+  margin: 0 0 12px;
+  color: #687293;
 }
 
 .browse-events-link {
@@ -81,7 +86,7 @@
   text-decoration: none;
   background: #00d4ff;
   color: #1a1a2e;
-  padding: 10px 14px;
+  padding: 9px 13px;
   border-radius: 8px;
   font-weight: 700;
 }
@@ -89,14 +94,14 @@
 .registration-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 16px;
+  gap: 12px;
 }
 
 .registration-card {
-  border: 1px solid #ececf5;
+  border: 1px solid #e5ebf7;
   border-radius: 10px;
-  padding: 14px;
-  background: #fafafe;
+  padding: 12px;
+  background: #f9fbff;
 }
 
 .registration-card-top {
@@ -107,11 +112,12 @@
 
 .status-pill {
   text-transform: capitalize;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   padding: 4px 10px;
-  border-radius: 20px;
-  background: #e0f7fa;
-  color: #006064;
+  border-radius: 999px;
+  background: #e3f2fd;
+  color: #0d47a1;
+  font-weight: 700;
 }
 
 .status-pill.cancelled {
@@ -131,19 +137,19 @@
 
 .registration-card h3 {
   margin: 0 0 8px;
-  color: #1f233a;
+  color: #232b49;
 }
 
 .registration-card p {
   margin: 0 0 8px;
-  color: #4a4a57;
-  font-size: 0.95rem;
+  color: #556082;
+  font-size: 0.93rem;
 }
 
 .registration-actions {
   display: flex;
   gap: 8px;
-  margin-top: 12px;
+  margin-top: 10px;
   flex-wrap: wrap;
 }
 
@@ -151,10 +157,11 @@
 .cancel-btn {
   border: none;
   text-decoration: none;
-  font-size: 0.9rem;
-  padding: 8px 12px;
-  border-radius: 7px;
+  font-size: 0.88rem;
+  padding: 8px 11px;
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: 700;
 }
 
 .view-btn {
@@ -169,7 +176,7 @@
 
 @media (max-width: 700px) {
   .my-registrations-container {
-    padding: 16px;
+    padding: 14px;
   }
 
   .my-registrations-header {

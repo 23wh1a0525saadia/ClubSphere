@@ -135,8 +135,15 @@ exports.login = async (req, res, next) => {
 exports.getCurrentUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id)
-      .populate('clubsJoined')
-      .populate('eventsRegistered');
+      .populate('clubsJoined', 'name category')
+      .populate({
+        path: 'eventsRegistered',
+        select: 'status event',
+        populate: {
+          path: 'event',
+          select: 'title startDate location eventType status'
+        }
+      });
 
     res.status(200).json({
       success: true,
@@ -152,9 +159,34 @@ exports.updateProfile = async (req, res, next) => {
   try {
     const { name, department, semester, profileImage } = req.body;
 
+    const updates = { updatedAt: Date.now() };
+
+    if (typeof name === 'string' && name.trim() !== '') {
+      updates.name = name.trim();
+    }
+
+    if (typeof department === 'string' && department.trim() !== '') {
+      updates.department = department.trim().toUpperCase();
+    }
+
+    if (semester !== undefined && semester !== null && semester !== '') {
+      const normalizedSemester = Number(semester);
+      if (Number.isNaN(normalizedSemester)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Semester must be a number'
+        });
+      }
+      updates.semester = normalizedSemester;
+    }
+
+    if (profileImage !== undefined) {
+      updates.profileImage = profileImage;
+    }
+
     const user = await User.findByIdAndUpdate(
       req.user.id,
-      { name, department, semester, profileImage, updatedAt: Date.now() },
+      updates,
       { new: true, runValidators: true }
     );
 
@@ -186,8 +218,15 @@ exports.getAllUsers = async (req, res, next) => {
 exports.getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id)
-      .populate('clubsJoined')
-      .populate('eventsRegistered');
+      .populate('clubsJoined', 'name category')
+      .populate({
+        path: 'eventsRegistered',
+        select: 'status event',
+        populate: {
+          path: 'event',
+          select: 'title startDate location eventType status'
+        }
+      });
 
     if (!user) {
       return res.status(404).json({ 

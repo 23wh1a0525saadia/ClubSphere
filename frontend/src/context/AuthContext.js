@@ -39,9 +39,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       const response = await authService.register(userData);
       localStorage.setItem('token', response.data.token);
-      setUser(response.data.user);
-      setIsAuthenticated(true);
-      setError(null);
+      await fetchCurrentUser();
       return response.data;
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Registration failed';
@@ -50,16 +48,14 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [fetchCurrentUser]);
 
   const login = useCallback(async (email, password) => {
     try {
       setLoading(true);
       const response = await authService.login({ email, password });
       localStorage.setItem('token', response.data.token);
-      setUser(response.data.user);
-      setIsAuthenticated(true);
-      setError(null);
+      await fetchCurrentUser();
       return response.data;
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Login failed';
@@ -68,7 +64,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [fetchCurrentUser]);
 
   const logout = useCallback(() => {
     localStorage.removeItem('token');

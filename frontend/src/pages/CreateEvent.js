@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { eventService, clubService } from '../services/api';
 import './CreateEvent.css';
@@ -7,6 +7,7 @@ import './CreateEvent.css';
 const CreateEvent = () => {
   const { user, isAuthenticated, loading } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [clubs, setClubs] = useState([]);
@@ -23,6 +24,8 @@ const CreateEvent = () => {
     capacity: 100,
     club: ''
   });
+
+  const selectedClubId = searchParams.get('clubId') || '';
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -51,6 +54,15 @@ const CreateEvent = () => {
       fetchClubs();
     }
   }, [isAuthenticated, loading]);
+
+  useEffect(() => {
+    if (selectedClubId) {
+      setFormData((prev) => ({
+        ...prev,
+        club: selectedClubId
+      }));
+    }
+  }, [selectedClubId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -165,10 +177,10 @@ const CreateEvent = () => {
               <select name="eventType" value={formData.eventType} onChange={handleChange}>
                 <option value="seminar">Seminar</option>
                 <option value="workshop">Workshop</option>
-                <option value="conference">Conference</option>
                 <option value="competition">Competition</option>
                 <option value="fest">Fest</option>
-                <option value="networking">Networking</option>
+                <option value="social">Social</option>
+                <option value="technical">Technical</option>
                 <option value="other">Other</option>
               </select>
             </div>

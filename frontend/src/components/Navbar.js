@@ -23,12 +23,16 @@ const Navbar = () => {
           <li className="nav-item">
             <Link to="/" className="nav-link">Home</Link>
           </li>
-          <li className="nav-item">
-            <Link to="/clubs" className="nav-link">Clubs</Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/events" className="nav-link">Events</Link>
-          </li>
+          {isAuthenticated && (
+            <>
+              <li className="nav-item">
+                <Link to="/clubs" className="nav-link">Clubs</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/events" className="nav-link">Events</Link>
+              </li>
+            </>
+          )}
           {isAuthenticated && user && (
             <>
               <li className="nav-item">

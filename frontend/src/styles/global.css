@@ -1,90 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #f5f7fb;
+  --bg-alt: #e9eef8;
+  --surface: #ffffff;
+  --surface-soft: #f6f9ff;
+  --text: #1d2333;
+  --text-soft: #5a6786;
+  --line: #dce5f4;
+  --brand: #00d4ff;
+  --brand-strong: #00a8cc;
+  --accent: #764ba2;
+  --accent-soft: #e8def4;
+  --success: #2f9a65;
+  --danger: #d24b4b;
+  --shadow-sm: 0 6px 14px rgba(20, 32, 74, 0.08);
+  --shadow-md: 0 14px 32px rgba(20, 32, 74, 0.12);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f5f5;
-  color: #333;
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
 }
 
-html, body, #root {
-  width: 100%;
-  height: 100%;
+body {
+  font-family: 'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(131, 144, 255, 0.16) 0%, transparent 30%),
+    radial-gradient(circle at 92% 6%, rgba(0, 212, 255, 0.14) 0%, transparent 24%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Space Grotesk', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  letter-spacing: -0.02em;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #00d4ff;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #00a8cc;
-}
-
-/* Selection */
-::selection {
-  background-color: #00d4ff;
-  color: #1a1a2e;
-}
-
-::-moz-selection {
-  background-color: #00d4ff;
-  color: #1a1a2e;
-}
-
-/* Links */
 a {
-  color: #00d4ff;
+  color: var(--brand);
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: color 0.2s ease;
 }
 
 a:hover {
-  color: #00a8cc;
+  color: var(--brand-strong);
 }
 
-/* Input focus */
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
 input:focus,
 textarea:focus,
-select:focus {
-  outline: 2px solid #00d4ff;
+select:focus,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--brand) 72%, white 28%);
   outline-offset: 2px;
 }
 
-/* Responsive Typography */
+::selection {
+  background-color: color-mix(in srgb, var(--brand) 62%, white 38%);
+  color: #1a1a2e;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #e7edf7;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #91bad8;
+  border-radius: 999px;
+  border: 2px solid #e7edf7;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6fa1ca;
+}
+
 @media (max-width: 600px) {
   body {
     font-size: 14px;
-  }
-
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  h2 {
-    font-size: 1.3rem;
-  }
-
-  h3 {
-    font-size: 1.1rem;
   }
 }

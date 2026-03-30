@@ -24,6 +24,13 @@ exports.registerForEvent = async (req, res, next) => {
       });
     }
 
+    if (event.status === 'completed' || event.status === 'cancelled') {
+      return res.status(400).json({
+        success: false,
+        message: 'Registration is not allowed for this event status'
+      });
+    }
+
     if (event.registrationCount >= event.capacity) {
       return res.status(400).json({ 
         success: false, 
@@ -39,9 +46,55 @@ exports.registerForEvent = async (req, res, next) => {
       });
     }
 
+    if (!user.registrationNumber || !user.department) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please complete your profile with registration number and department before registering'
+      });
+    }
+
     // Check if already registered
     const existingReg = await Registration.findOne({ event: eventId, student: userId });
     if (existingReg) {
+      const eventHasRegistrationRef = Array.isArray(event.registrations)
+        ? event.registrations.some((registrationId) => registrationId.toString() === existingReg._id.toString())
+        : false;
+
+      // Allow reactivation for any non-active registration or detached reference.
+      const isActiveRegistration = existingReg.status === 'registered' && eventHasRegistrationRef;
+      if (!isActiveRegistration) {
+        existingReg.status = 'registered';
+        existingReg.attendance = false;
+        existingReg.attendedAt = null;
+        existingReg.club = event.club;
+        existingReg.registrationNumber = user.registrationNumber;
+        existingReg.department = user.department;
+        existingReg.registeredAt = new Date();
+        await existingReg.save();
+
+        await Event.findByIdAndUpdate(eventId, {
+          $addToSet: { registrations: existingReg._id }
+        });
+
+        const reactivatedEvent = await Event.findById(eventId);
+        if (reactivatedEvent) {
+          reactivatedEvent.registrationCount = reactivatedEvent.registrations.length;
+          await reactivatedEvent.save();
+        }
+
+        await User.findByIdAndUpdate(userId, {
+          $addToSet: { eventsRegistered: existingReg._id }
+        });
+
+        await existingReg.populate(['event', 'student', 'club']);
+
+        return res.status(200).json({
+          success: true,
+          message: 'Registration reactivated successfully',
+          registration: existingReg
+        });
+      }
+
       return res.status(400).json({ 
         success: false, 
         message: 'Already registered for this event' 
@@ -75,6 +128,32 @@ exports.registerForEvent = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: 'Registration successful',
+      registration
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get my registration status for a specific event
+exports.getMyEventRegistration = async (req, res, next) => {
+  try {
+    const { eventId } = req.params;
+
+    const registration = await Registration.findOne({
+      event: eventId,
+      student: req.user.id
+    }).populate('event', 'title startDate location');
+
+    if (!registration) {
+      return res.status(200).json({
+        success: true,
+        registration: null
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
       registration
     });
   } catch (error) {
@@ -204,6 +283,8 @@ exports.cancelRegistration = async (req, res, next) => {
     }
 
     registration.status = 'cancelled';
+    registration.attendance = false;
+    registration.attendedAt = null;
     await registration.save();
 
     // Remove registration references and keep counts in sync
