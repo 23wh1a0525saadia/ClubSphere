@@ -9,14 +9,6 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Check if user is logged in on mount
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetchCurrentUser();
-    }
-  }, []);
-
   const fetchCurrentUser = useCallback(async () => {
     try {
       setLoading(true);
@@ -33,6 +25,14 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   }, []);
+
+  // Check if user is logged in on mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchCurrentUser();
+    }
+  }, [fetchCurrentUser]);
 
   const register = useCallback(async (userData) => {
     try {

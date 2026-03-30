@@ -1,0 +1,12 @@
+{
+  "name": "clubsphere-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npm run start:backend",
+    "start:backend": "npm --prefix backend run start",
+    "start:frontend": "npm --prefix frontend run start",
+    "build": "npm --prefix frontend run build",
+    "dev:backend": "npm --prefix backend run dev"
+  }
+}

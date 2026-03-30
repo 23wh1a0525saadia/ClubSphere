@@ -1,0 +1,160 @@
+.admin-registrations-page {
+  min-height: calc(100vh - 80px);
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.admin-registrations-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+}
+
+.page-back-btn {
+  border: none;
+  background: #1a1a2e;
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.admin-registrations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  gap: 12px;
+}
+
+.admin-registrations-header h1 {
+  margin: 0;
+  color: #1f233a;
+}
+
+.refresh-btn {
+  border: none;
+  background: #00d4ff;
+  color: #1a1a2e;
+  padding: 9px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.event-selector-wrap {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.event-selector-wrap label {
+  font-weight: 700;
+  color: #3b3f57;
+}
+
+.event-selector-wrap select {
+  border: 1px solid #d9dbe8;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.event-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px;
+  padding: 14px;
+  border-radius: 8px;
+  background: #f7f8ff;
+  margin-bottom: 16px;
+}
+
+.event-summary p {
+  margin: 0;
+  color: #2f334a;
+}
+
+.state-text,
+.message {
+  margin: 12px 0;
+}
+
+.message.error {
+  color: #b71c1c;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 24px 12px;
+  background: #fafbff;
+  border: 1px solid #eceffd;
+  border-radius: 8px;
+}
+
+.empty-state h2 {
+  margin: 0 0 8px;
+}
+
+.empty-state p {
+  margin: 0;
+}
+
+.registration-table-wrap {
+  overflow-x: auto;
+}
+
+.registration-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.registration-table th,
+.registration-table td {
+  border-bottom: 1px solid #ececf5;
+  text-align: left;
+  padding: 10px;
+  color: #32364d;
+}
+
+.registration-table th {
+  background: #f7f8ff;
+  font-weight: 700;
+}
+
+.status-cell {
+  text-transform: capitalize;
+}
+
+.attendance-btn {
+  border: none;
+  border-radius: 7px;
+  padding: 7px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.attendance-btn.present {
+  background: #dcedc8;
+  color: #33691e;
+}
+
+.attendance-btn.absent {
+  background: #ffcdd2;
+  color: #b71c1c;
+}
+
+@media (max-width: 768px) {
+  .admin-registrations-container {
+    padding: 14px;
+  }
+
+  .admin-registrations-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -9,13 +9,15 @@ const eventSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: [true, 'Please provide a description'],
+    required: false,
+    default: '',
     maxlength: [2000, 'Description cannot exceed 2000 characters']
   },
   club: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Club',
-    required: true
+    required: false,
+    default: null
   },
   banner: {
     type: String,
@@ -36,11 +38,13 @@ const eventSchema = new mongoose.Schema({
   },
   startTime: {
     type: String,
-    required: true
+    required: false,
+    default: '10:00'
   },
   endTime: {
     type: String,
-    required: true
+    required: false,
+    default: '12:00'
   },
   location: {
     type: String,
@@ -76,6 +80,24 @@ const eventSchema = new mongoose.Schema({
   isFeatured: {
     type: Boolean,
     default: false
+  },
+  payment: {
+    required: {
+      type: Boolean,
+      default: false
+    },
+    amount: {
+      type: Number,
+      default: 0
+    },
+    scannerQR: {
+      type: String,
+      default: null
+    },
+    description: {
+      type: String,
+      default: 'Event Registration Fee'
+    }
   },
   createdAt: {
     type: Date,

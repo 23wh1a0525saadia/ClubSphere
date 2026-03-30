@@ -1,0 +1,179 @@
+.my-registrations-page {
+  min-height: calc(100vh - 80px);
+  padding: 32px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.my-registrations-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.page-back-btn {
+  border: none;
+  background: #1a1a2e;
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.history-caption {
+  margin: 0 0 16px 0;
+  color: #646b83;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.my-registrations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.my-registrations-header h1 {
+  margin: 0;
+  color: #1f233a;
+}
+
+.refresh-btn {
+  border: none;
+  background: #00d4ff;
+  color: #1a1a2e;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.state-text {
+  margin: 12px 0;
+  color: #2e2e2e;
+}
+
+.state-text.error {
+  color: #c62828;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 28px 12px;
+}
+
+.empty-state h2 {
+  margin: 0 0 8px;
+}
+
+.empty-state p {
+  margin: 0 0 16px;
+}
+
+.browse-events-link {
+  display: inline-block;
+  text-decoration: none;
+  background: #00d4ff;
+  color: #1a1a2e;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.registration-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 16px;
+}
+
+.registration-card {
+  border: 1px solid #ececf5;
+  border-radius: 10px;
+  padding: 14px;
+  background: #fafafe;
+}
+
+.registration-card-top {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.status-pill {
+  text-transform: capitalize;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #e0f7fa;
+  color: #006064;
+}
+
+.status-pill.cancelled {
+  background: #ffebee;
+  color: #b71c1c;
+}
+
+.status-pill.attended {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.status-pill.registered {
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+.registration-card h3 {
+  margin: 0 0 8px;
+  color: #1f233a;
+}
+
+.registration-card p {
+  margin: 0 0 8px;
+  color: #4a4a57;
+  font-size: 0.95rem;
+}
+
+.registration-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.view-btn,
+.cancel-btn {
+  border: none;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.view-btn {
+  background: #eceff1;
+  color: #263238;
+}
+
+.cancel-btn {
+  background: #ffcdd2;
+  color: #b71c1c;
+}
+
+@media (max-width: 700px) {
+  .my-registrations-container {
+    padding: 16px;
+  }
+
+  .my-registrations-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

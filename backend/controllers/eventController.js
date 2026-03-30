@@ -1,37 +1,51 @@
 const Event = require('../models/Event');
 const Registration = require('../models/Registration');
 const Club = require('../models/Club');
+const User = require('../models/User');
 
 // Create event
 exports.createEvent = async (req, res, next) => {
   try {
     const { title, description, club, eventType, startDate, endDate, startTime, endTime, location, capacity } = req.body;
 
-    if (!title || !description || !club || !eventType || !location || !capacity) {
+    // Only require essential fields
+    if (!title || !eventType || !location || !capacity || !startDate || !endDate) {
       return res.status(400).json({ 
         success: false, 
-        message: 'Please provide all required fields' 
+        message: 'Please provide: Title, Event Type, Location, Capacity, Start Date, End Date' 
       });
+    }
+
+    if (club) {
+      const clubExists = await Club.findById(club);
+      if (!clubExists) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid club selected'
+        });
+      }
     }
 
     const event = await Event.create({
       title,
-      description,
-      club,
+      description: description || '',
+      club: club || null,
       eventType,
       startDate,
       endDate,
-      startTime,
-      endTime,
+      startTime: startTime || '10:00',
+      endTime: endTime || '12:00',
       location,
       capacity,
       organizers: [req.user.id]
     });
 
-    // Add event to club
-    await Club.findByIdAndUpdate(club, {
-      $push: { events: event._id }
-    });
+    // Add event to club only if club is provided
+    if (club) {
+      await Club.findByIdAndUpdate(club, {
+        $addToSet: { events: event._id }
+      });
+    }
 
     await event.populate(['club', 'organizers']);
 
@@ -106,20 +120,49 @@ exports.updateEvent = async (req, res, next) => {
     }
 
     // Check authorization
-    if (!event.organizers.includes(req.user.id) && req.user.role !== 'admin') {
+    const isOrganizer = event.organizers.some(
+      (organizerId) => organizerId.toString() === req.user.id
+    );
+
+    if (!isOrganizer && req.user.role !== 'admin') {
       return res.status(403).json({ 
         success: false, 
         message: 'Not authorized to update this event' 
       });
     }
 
-    const { title, description, eventType, startDate, endDate, startTime, endTime, location, capacity, isRegistrationOpen, status, banner } = req.body;
+    const { title, description, eventType, startDate, endDate, startTime, endTime, location, capacity, isRegistrationOpen, status, banner, club } = req.body;
+
+    const originalClubId = event.club ? event.club.toString() : null;
+    const targetClubId = club === '' ? null : (club || originalClubId);
+
+    if (targetClubId) {
+      const targetClub = await Club.findById(targetClubId);
+      if (!targetClub) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid club selected'
+        });
+      }
+    }
 
     event = await Event.findByIdAndUpdate(
       req.params.id,
-      { title, description, eventType, startDate, endDate, startTime, endTime, location, capacity, isRegistrationOpen, status, banner, updatedAt: Date.now() },
+      { title, description, eventType, startDate, endDate, startTime, endTime, location, capacity, isRegistrationOpen, status, banner, club: targetClubId, updatedAt: Date.now() },
       { new: true, runValidators: true }
     ).populate(['club', 'organizers']);
+
+    if (originalClubId && originalClubId !== targetClubId) {
+      await Club.findByIdAndUpdate(originalClubId, {
+        $pull: { events: event._id }
+      });
+    }
+
+    if (targetClubId && originalClubId !== targetClubId) {
+      await Club.findByIdAndUpdate(targetClubId, {
+        $addToSet: { events: event._id }
+      });
+    }
 
     res.status(200).json({
       success: true,
@@ -160,14 +203,36 @@ exports.deleteEvent = async (req, res, next) => {
     }
 
     // Check authorization
-    if (!event.organizers.includes(req.user.id) && req.user.role !== 'admin') {
+    const isOrganizer = event.organizers.some(
+      (organizerId) => organizerId.toString() === req.user.id
+    );
+
+    if (!isOrganizer && req.user.role !== 'admin') {
       return res.status(403).json({ 
         success: false, 
         message: 'Not authorized to delete this event' 
       });
     }
 
-    await Event.findByIdAndDelete(req.params.id);
+    const registrations = await Registration.find({ event: event._id }, '_id student');
+    const registrationIds = registrations.map((registration) => registration._id);
+    const affectedUserIds = registrations
+      .map((registration) => registration.student)
+      .filter((studentId) => !!studentId);
+
+    await Promise.all([
+      event.club
+        ? Club.findByIdAndUpdate(event.club, { $pull: { events: event._id } })
+        : Promise.resolve(),
+      registrationIds.length > 0
+        ? User.updateMany(
+            { _id: { $in: affectedUserIds } },
+            { $pull: { eventsRegistered: { $in: registrationIds } } }
+          )
+        : Promise.resolve(),
+      Registration.deleteMany({ event: event._id }),
+      Event.findByIdAndDelete(req.params.id)
+    ]);
 
     res.status(200).json({
       success: true,

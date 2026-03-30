@@ -14,7 +14,7 @@ const registrationSchema = new mongoose.Schema({
   club: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Club',
-    required: true
+    default: null
   },
   registrationNumber: {
     type: String,
@@ -51,6 +51,39 @@ const registrationSchema = new mongoose.Schema({
     min: 0,
     max: 5,
     default: null
+  },
+  payment: {
+    paymentRequired: {
+      type: Boolean,
+      default: false
+    },
+    amount: {
+      type: Number,
+      default: 0
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'completed', 'failed', 'verified'],
+      default: 'pending'
+    },
+    paymentCode: {
+      type: String,
+      default: null
+    },
+    paymentMethod: {
+      type: String,
+      enum: ['scanner', 'cash', 'online', 'none'],
+      default: 'none'
+    },
+    verifiedAt: {
+      type: Date,
+      default: null
+    },
+    verifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null
+    }
   }
 });
 

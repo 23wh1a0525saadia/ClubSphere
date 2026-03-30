@@ -153,7 +153,7 @@ exports.updateClub = async (req, res, next) => {
 // Join club
 exports.joinClub = async (req, res, next) => {
   try {
-    const club = await Club.findById(req.params.id);
+    let club = await Club.findById(req.params.id);
 
     if (!club) {
       return res.status(404).json({ 
@@ -174,7 +174,11 @@ exports.joinClub = async (req, res, next) => {
       });
     }
 
-    club.members.push(req.user.id);
+    await Club.findByIdAndUpdate(req.params.id, {
+      $addToSet: { members: req.user.id }
+    });
+
+    club = await Club.findById(req.params.id);
     club.memberCount = club.members.length;
     await club.save();
 
@@ -196,7 +200,7 @@ exports.joinClub = async (req, res, next) => {
 // Leave club
 exports.leaveClub = async (req, res, next) => {
   try {
-    const club = await Club.findById(req.params.id);
+    let club = await Club.findById(req.params.id);
 
     if (!club) {
       return res.status(404).json({ 
@@ -223,7 +227,11 @@ exports.leaveClub = async (req, res, next) => {
       });
     }
 
-    club.members = club.members.filter(m => m.toString() !== req.user.id);
+    await Club.findByIdAndUpdate(req.params.id, {
+      $pull: { members: req.user.id }
+    });
+
+    club = await Club.findById(req.params.id);
     club.memberCount = club.members.length;
     await club.save();
 

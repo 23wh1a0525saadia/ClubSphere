@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { clubService } from '../services/api';
 import './Clubs.css';
@@ -10,11 +10,7 @@ const Clubs = () => {
 
   const categories = ['academic', 'cultural', 'sports', 'technical', 'social', 'professional'];
 
-  useEffect(() => {
-    fetchClubs();
-  }, [selectedCategory]);
-
-  const fetchClubs = async () => {
+  const fetchClubs = useCallback(async () => {
     try {
       setLoading(true);
       const response = await clubService.getAllClubs(selectedCategory);
@@ -24,7 +20,11 @@ const Clubs = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    fetchClubs();
+  }, [fetchClubs]);
 
   return (
     <div className="clubs-page">

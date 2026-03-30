@@ -1,0 +1,259 @@
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+.page-back-btn {
+  border: none;
+  background: #1a1a2e;
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.admin-header h1 {
+  font-size: 32px;
+  margin: 0;
+  color: #333;
+}
+
+.btn-add {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-add:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.alert {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  color: #856404;
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.alert button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #856404;
+}
+
+.admin-form {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  display: grid;
+  gap: 15px;
+}
+
+.admin-form input,
+.admin-form textarea,
+.admin-form select {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.3s;
+}
+
+.admin-form input:focus,
+.admin-form textarea:focus,
+.admin-form select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.payment-section {
+  display: grid;
+  gap: 10px;
+}
+
+.payment-section label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #333;
+}
+
+.payment-section input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  grid-column: 1 / -1;
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.clubs-list,
+.events-list {
+  display: grid;
+  gap: 20px;
+}
+
+.club-item,
+.event-item {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: all 0.3s ease;
+}
+
+.club-item:hover,
+.event-item:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.club-info,
+.event-info {
+  flex: 1;
+}
+
+.club-info h3,
+.event-info h3 {
+  margin: 0 0 10px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.category,
+.type,
+.location,
+.dates,
+.capacity,
+.payment,
+.members,
+.description {
+  margin: 8px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.description {
+  color: #777;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+
+.payment {
+  color: #667eea;
+  font-weight: 600;
+}
+
+.club-actions,
+.event-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: 20px;
+}
+
+.btn-delete {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-delete:hover {
+  background: #ff5252;
+  transform: translateY(-2px);
+}
+
+.empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+  background: white;
+  border-radius: 12px;
+}
+
+@media (max-width: 768px) {
+  .admin-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .club-item,
+  .event-item {
+    flex-direction: column;
+  }
+
+  .club-actions,
+  .event-actions {
+    margin-left: 0;
+    margin-top: 15px;
+    width: 100%;
+  }
+
+  .btn-delete {
+    width: 100%;
+  }
+
+  .admin-form {
+    grid-template-columns: 1fr;
+  }
+}

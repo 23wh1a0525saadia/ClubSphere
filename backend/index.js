@@ -10,6 +10,7 @@ const clubRoutes = require('./routes/clubRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const registrationRoutes = require('./routes/registrationRoutes');
 const announcementRoutes = require('./routes/announcementRoutes');
+const statsRoutes = require('./routes/statsRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -34,6 +35,7 @@ app.use('/api/clubs', clubRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/registrations', registrationRoutes);
 app.use('/api/announcements', announcementRoutes);
+app.use('/api/stats', statsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

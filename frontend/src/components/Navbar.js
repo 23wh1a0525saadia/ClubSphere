@@ -37,10 +37,14 @@ const Navbar = () => {
               <li className="nav-item">
                 <Link to="/profile" className="nav-link">Profile</Link>
               </li>
-              {user.role === 'admin' || user.role === 'president' && (
-                <li className="nav-item">
-                  <Link to="/dashboard" className="nav-link">Dashboard</Link>
-                </li>
+              {(user.role === 'admin' || user.role === 'president') && (
+                <>
+                  <li className="nav-item admin-item">
+                    <Link to="/admin/dashboard" className="nav-link admin-link">
+                      🎯 Admin
+                    </Link>
+                  </li>
+                </>
               )}
               <li className="nav-item">
                 <button onClick={handleLogout} className="nav-link logout-btn">

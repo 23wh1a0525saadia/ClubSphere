@@ -10,10 +10,29 @@ const generateToken = (id, role) => {
 // Register user
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, password, role, registrationNumber, department, semester } = req.body;
+    const {
+      name,
+      email,
+      password,
+      role,
+      registrationNumber,
+      department,
+      semester
+    } = req.body;
+
+    const normalizedName = typeof name === 'string' ? name.trim() : name;
+    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : email;
+    const normalizedRegistrationNumber =
+      typeof registrationNumber === 'string' && registrationNumber.trim() !== ''
+        ? registrationNumber.trim()
+        : undefined;
+    const normalizedDepartment =
+      typeof department === 'string' && department.trim() !== '' ? department.trim() : undefined;
+    const normalizedSemester =
+      semester !== undefined && semester !== null && semester !== '' ? Number(semester) : undefined;
 
     // Validate input
-    if (!name || !email || !password) {
+    if (!normalizedName || !normalizedEmail || !password) {
       return res.status(400).json({ 
         success: false, 
         message: 'Please provide all required fields' 
@@ -21,7 +40,7 @@ exports.register = async (req, res, next) => {
     }
 
     // Check if user exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res.status(400).json({ 
         success: false, 
@@ -29,16 +48,27 @@ exports.register = async (req, res, next) => {
       });
     }
 
-    // Create user
-    const user = await User.create({
-      name,
-      email,
+    const userData = {
+      name: normalizedName,
+      email: normalizedEmail,
       password,
-      role: role || 'student',
-      registrationNumber,
-      department,
-      semester
-    });
+      role: role || 'student'
+    };
+
+    if (normalizedRegistrationNumber) {
+      userData.registrationNumber = normalizedRegistrationNumber;
+    }
+
+    if (normalizedDepartment) {
+      userData.department = normalizedDepartment;
+    }
+
+    if (normalizedSemester !== undefined && !Number.isNaN(normalizedSemester)) {
+      userData.semester = normalizedSemester;
+    }
+
+    // Create user
+    const user = await User.create(userData);
 
     // Remove password from response
     user.password = undefined;
@@ -59,9 +89,10 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : email;
 
     // Validate input
-    if (!email || !password) {
+    if (!normalizedEmail || !password) {
       return res.status(400).json({ 
         success: false, 
         message: 'Please provide email and password' 
@@ -69,7 +100,7 @@ exports.login = async (req, res, next) => {
     }
 
     // Get user with password
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email: normalizedEmail }).select('+password');
     if (!user) {
       return res.status(401).json({ 
         success: false, 

@@ -82,6 +82,19 @@
   color: #1a1a2e !important;
 }
 
+.admin-item .admin-link {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: 600 !important;
+  transition: all 0.3s ease;
+}
+
+.admin-item .admin-link:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
 @media (max-width: 768px) {
   .nav-menu {
     gap: 1rem;

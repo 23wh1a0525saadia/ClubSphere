@@ -10,7 +10,8 @@ const Register = () => {
     password: '',
     registrationNumber: '',
     department: 'OTHER',
-    semester: 1
+    semester: 1,
+    role: 'student'
   });
   const [error, setError] = useState('');
   const { register, loading } = useContext(AuthContext);
@@ -26,7 +27,7 @@ const Register = () => {
     e.preventDefault();
     try {
       await register(formData);
-      navigate('/');
+      navigate('/profile');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
     }
@@ -73,6 +74,32 @@ const Register = () => {
               required
               placeholder="Enter a password"
             />
+          </div>
+
+          <div className="form-group role-selection">
+            <label>👤 Select Your Role</label>
+            <div className="role-options">
+              <label className="role-option">
+                <input
+                  type="radio"
+                  name="role"
+                  value="student"
+                  checked={formData.role === 'student'}
+                  onChange={handleChange}
+                />
+                <span>📚 Student - Browse & Register for Events</span>
+              </label>
+              <label className="role-option">
+                <input
+                  type="radio"
+                  name="role"
+                  value="admin"
+                  checked={formData.role === 'admin'}
+                  onChange={handleChange}
+                />
+                <span>🎯 Admin/Club Head - Create & Manage Events</span>
+              </label>
+            </div>
           </div>
 
           <div className="form-group">

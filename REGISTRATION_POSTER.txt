@@ -1,0 +1,110 @@
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║              🎓 CLUBSPHERE - EVENT MANAGEMENT 🎓               ║
+║                                                                ║
+║                    REGISTER NOW & JOIN EVENTS!                 ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+
+👉 REGISTER HERE: http://localhost:3000/register
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 IN 5 EASY STEPS:
+
+  1️⃣  Fill your name
+  2️⃣  Enter your email
+  3️⃣  Create a password
+  4️⃣  Enter college details (reg number, dept, semester)
+  5️⃣  ⭐ SELECT "STUDENT" - Click Register! ✅
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+✨ THEN YOU CAN:
+
+  ✓ Browse all college events
+  ✓ See event details
+  ✓ Register for events
+  ✓ Track your registrations
+  ✓ Manage your profile
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📍 QUICK LINKS:
+
+  🔗 Register:     http://localhost:3000/register
+  🔗 Login:        http://localhost:3000/login
+  🔗 Browse Events: http://localhost:3000/events
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+⏰ TAKES: 2 MINUTES
+
+📱 WORKS: On phone, tablet, desktop
+
+✅ EASY: Super simple - just fill and register!
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+❓ WHAT YOU NEED:
+
+  • Your name
+  • Your email
+  • A password
+  • Registration number
+  • Department
+  • Semester/Year
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+🎯 DON'T FORGET:
+
+  ⭐⭐⭐ WHEN REGISTERING, SELECT "STUDENT" ROLE ⭐⭐⭐
+
+  (Unless you want to create events - then choose Admin)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+👥 SHARE WITH YOUR CLASSMATES!
+
+  "Hey! Register for ClubSphere - college event platform!
+   http://localhost:3000/register
+   Super easy, see you at events! 🎉"
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+❓ ISSUES?
+
+  Can't register? Try different browser
+  Forgot password? Contact: admin@college.edu
+  Other issues? Email: support@college.edu
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+🚀 START NOW:
+
+      👉 http://localhost:3000/register 👈
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+                    HAPPY EVENT REGISTERING! 🎉
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

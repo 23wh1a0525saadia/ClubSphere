@@ -34,7 +34,7 @@ exports.createAnnouncement = async (req, res, next) => {
 
     // Add to club announcements
     await Club.findByIdAndUpdate(club, {
-      $push: { announcements: announcement._id }
+      $addToSet: { announcements: announcement._id }
     });
 
     await announcement.populate(['club', 'createdBy']);
@@ -152,7 +152,7 @@ exports.likeAnnouncement = async (req, res, next) => {
       });
     }
 
-    if (announcement.likes.includes(req.user.id)) {
+    if (announcement.likes.some((id) => id.toString() === req.user.id)) {
       announcement.likes = announcement.likes.filter(id => id.toString() !== req.user.id);
     } else {
       announcement.likes.push(req.user.id);
@@ -222,7 +222,12 @@ exports.deleteAnnouncement = async (req, res, next) => {
       });
     }
 
-    await Announcement.findByIdAndDelete(req.params.id);
+    await Promise.all([
+      Club.findByIdAndUpdate(announcement.club, {
+        $pull: { announcements: announcement._id }
+      }),
+      Announcement.findByIdAndDelete(req.params.id)
+    ]);
 
     res.status(200).json({
       success: true,

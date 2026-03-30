@@ -6,8 +6,8 @@ const router = express.Router();
 
 // Public routes
 router.get('/', eventController.getAllEvents);
-router.get('/:id', eventController.getEventById);
 router.get('/club/:clubId', eventController.getEventsByClub);
+router.get('/:id', eventController.getEventById);
 
 // Protected routes
 router.post('/', authMiddleware, authorize('president', 'admin'), eventController.createEvent);

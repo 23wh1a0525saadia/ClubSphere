@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { eventService } from '../services/api';
 import './Events.css';
@@ -10,11 +10,7 @@ const Events = () => {
 
   const statuses = ['upcoming', 'ongoing', 'completed'];
 
-  useEffect(() => {
-    fetchEvents();
-  }, [selectedStatus]);
-
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     try {
       setLoading(true);
       const response = await eventService.getAllEvents({ status: selectedStatus });
@@ -24,7 +20,11 @@ const Events = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedStatus]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
 
   const getStatusColor = (status) => {
     switch(status) {

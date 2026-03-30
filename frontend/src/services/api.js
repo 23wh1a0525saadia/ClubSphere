@@ -73,4 +73,9 @@ export const announcementService = {
   addComment: (id, data) => api.post(`/announcements/${id}/comment`, data)
 };
 
+// Stats Service
+export const statsService = {
+  getSummaryStats: () => api.get('/stats/summary')
+};
+
 export default api;
